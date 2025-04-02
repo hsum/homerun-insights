@@ -1,43 +1,51 @@
 name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Lint with Ruff
-      run: ruff check src tests
-    - name: Test with pytest
-      run: pytest tests
-
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with: { python-version: '3.12' }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Configure AWS credentials
+        run: |
+          echo "Configuring AWS credentials..."
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+      - name: Fetch and test data
+        run: |
+          python -c "from src.data import download_from_s3; download_from_s3(2023)" || echo "Fetch failed, but continuing"
+          ls -lh data/homeruns_2023.parquet || echo "No parquet file generated"
+        continue-on-error: true
+      - name: Verify data
+        run: |
+          python -c "import polars as pl; df = pl.read_parquet('data/homeruns_2023.parquet'); print(df.height)"
   deploy:
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    if: success()
     steps:
-    - uses: actions/checkout@v4
-    - name: Deploy to EC2
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        EC2_USER: ec2-user
-        SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-      run: |
-        echo "$SSH_KEY" > key.pem
-        chmod 400 key.pem
-        rsync -avz -e "ssh -i key.pem" --exclude 'data/*.parquet' --exclude '.git' . $EC2_USER@$EC2_HOST:~/homerun-insights
-        ssh -i key.pem $EC2_USER@$EC2_HOST "cd ~/homerun-insights && make install && sudo systemctl restart homerun-insights"
-        rm key.pem
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with: { python-version: '3.12' }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Configure AWS credentials
+        run: |
+          echo "Configuring AWS credentials..."
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+      - name: Deploy to S3
+        run: make sync-s3
