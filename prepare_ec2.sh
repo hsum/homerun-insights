@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "Starting EC2 preparation..."
+echo "Starting EC2 preparation for Amazon Linux 2023..."
 
-# Install Python 3.12, pip, and git if not present
-if ! command -v python3.12 >/dev/null 2>&1 || ! command -v pip3.12 >/dev/null 2>&1 || ! command -v git >/dev/null 2>&1; then
-    echo "Installing Python 3.12, pip, and git..."
+# Install Python 3.12, pip, git, and make if not present
+if ! command -v python3.12 >/dev/null 2>&1 || ! command -v pip3.12 >/dev/null 2>&1 || ! command -v git >/dev/null 2>&1 || ! command -v make >/dev/null 2>&1; then
+    echo "Installing Python 3.12, pip, git, and make..."
     sudo dnf update -y
-    sudo dnf install -y python3.12 python3.12-pip git
+    sudo dnf install -y python3.12 python3.12-pip git make
 fi
 
 # Verify Python and pip
@@ -68,6 +68,8 @@ else
     echo "Systemd service already configured correctly."
 fi
 
-echo "EC2 preparation complete. Next steps:"
-echo "1. Ensure an IAM role with S3 access is attached to the EC2 instance."
-echo "2. Deploy the application with 'make deploy' from your local machine."
+echo "EC2 preparation complete."
+echo "Note: On AL2023, ensure /home/ec2-user has write perms (default) and IAM role is attached for S3."
+echo "Next steps:"
+echo "1. Attach an IAM role with S3 access (e.g., AmazonS3FullAccess) via AWS Console."
+echo "2. Deploy with 'make deploy' from local machine."
