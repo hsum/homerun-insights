@@ -36,9 +36,9 @@ echo "Upgrading pip in virtualenv..."
 # Create .env file only if it doesn’t exist
 if [ ! -f ~/.env ]; then
     echo "Creating .env file..."
-    cat << EOF9 > ~/.env
-S3_BUCKET=homerun-insights-data
-EC2_HOST=34.207.112.60
+    cat << 'EOF9' > ~/.env
+    S3_BUCKET=homerun-insights-data
+    INSTANCE_ID=i-0f651f276b2c426b7
 EOF9
 else
     echo ".env file already exists, skipping creation."

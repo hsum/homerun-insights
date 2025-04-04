@@ -5,8 +5,7 @@ import boto3
 import os
 from dotenv import load_dotenv
 import logging
-import pandas as pd
-import io
+from fastapi import HTTPException
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -35,34 +34,14 @@ def download_from_s3(year: int) -> Path:
             if e.response['Error']['Code'] == '404':
                 logger.info(f"{s3_key} not found in S3, fetching from Statcast")
                 try:
-                    # Fetch Statcast data
                     data = statcast(start_dt=f"{year}-01-01", end_dt=f"{year}-12-31")
                     if data.empty:
                         logger.error(f"No data returned from Statcast for {year}")
                         raise ValueError(f"No Statcast data available for {year}")
-                    # Filter home runs and write to Parquet
                     hr_data = pl.from_pandas(data[data["events"] == "home_run"])
                     hr_data.write_parquet(parquet_file)
                     logger.info(f"Writing {s3_key} to S3 after Statcast fetch")
                     s3_client.upload_file(str(parquet_file), S3_BUCKET, s3_key)
-                except pd.errors.ParserError as parse_err:
-                    logger.error(f"ParserError fetching Statcast data: {parse_err}")
-                    # Debug: Fetch raw CSV and inspect
-                    from pybaseball.datasources.statcast import StatcastDataSource
-                    ds = StatcastDataSource()
-                    csv_url = ds._construct_url(start_dt=f"{year}-01-01", end_dt=f"{year}-12-31")
-                    csv_content = ds._fetch_csv_content(csv_url)
-                    logger.debug(f"Raw CSV snippet:\n{csv_content[:500]}")  # First 500 chars
-                    # Fallback: Try reading with error handling
-                    try:
-                        data = pd.read_csv(io.StringIO(csv_content), on_bad_lines='skip')
-                        hr_data = pl.from_pandas(data[data["events"] == "home_run"])
-                        hr_data.write_parquet(parquet_file)
-                        s3_client.upload_file(str(parquet_file), S3_BUCKET, s3_key)
-                        logger.info(f"Fallback succeeded, wrote {s3_key} to S3")
-                    except Exception as fallback_err:
-                        logger.error(f"Fallback failed: {fallback_err}")
-                        raise
                 except Exception as statcast_err:
                     logger.error(f"Failed to fetch from Statcast: {statcast_err}")
                     raise
@@ -72,16 +51,28 @@ def download_from_s3(year: int) -> Path:
     return parquet_file
 
 def get_hr_stats(year: int) -> dict:
-    parquet_file = download_from_s3(year)
-    hr_data = pl.read_parquet(parquet_file)
-    
-    stats = {
-        "hr_count": hr_data.height,
-        "avg_launch_angle": hr_data["launch_angle"].mean(),
-        "avg_exit_velocity": hr_data["launch_speed"].mean(),
-        "pull_percentage": hr_data.filter(pl.col("hc_x") < 125).height / hr_data.height * 100
-    }
-    return stats
+    try:
+        parquet_file = download_from_s3(year)
+        hr_data = pl.read_parquet(parquet_file)
+
+        # Handle None values from Polars mean() on empty data
+        avg_launch_angle = hr_data["launch_angle"].mean()
+        avg_exit_velocity = hr_data["launch_speed"].mean()
+
+        stats = {
+            "hr_count": hr_data.height,
+            "avg_launch_angle": avg_launch_angle if avg_launch_angle is not None else 0.0,
+            "avg_exit_velocity": avg_exit_velocity if avg_exit_velocity is not None else 0.0,
+            "pull_percentage": (
+                hr_data.filter(pl.col("hc_x") < 125).height / hr_data.height * 100
+                if hr_data.height > 0
+                else 0.0
+            )
+        }
+        return stats
+    except Exception as e:
+        logger.error(f"Error fetching HR stats for {year}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 def get_pull_hr_relationship(year: int) -> dict:
     parquet_file = download_from_s3(year)
