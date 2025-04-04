@@ -5,101 +5,71 @@ A FastAPI application to analyze home run statistics using Statcast data, with S
 ## Setup
 
 1. **Clone the repo**:
- [?1049h[22;0;0t[?1h=[H[2J]11;?[?2004h[?u[c[?25h[?25l(B[m[H[2J[38;5;111m[48;5;236m#!/bin/bash(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mset(B[m[38;5;51m[48;5;236m (B[m[38;5;214m[48;5;236m-e(B[m[38;5;231m[48;5;236m[K
-[K
-(B[0;1m[38;5;227m[48;5;236mecho(B[m[38;5;217m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;217m[48;5;236mSetting up (B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mhomerun(B[m[38;5;217m[48;5;236m-insights documentation and build files...(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;51m[48;5;236mPROJECT_DIR(B[m[38;5;231m[48;5;236m=(B[0;1m[38;5;227m[48;5;236m"(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mhomerun(B[m[38;5;217m[48;5;236m-insights(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m[K
-(B[m[38;5;51m[48;5;236mPYTHON_VERSION(B[m[38;5;231m[48;5;236m=(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;217m[48;5;236m3.12.6(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[m[38;5;111m[48;5;236m# Matches base.sh(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;111m[48;5;236m# Check if the project directory exists in the current location(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mif [(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m!(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m-d(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m](B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m||(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m[(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m!(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m-f(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[m[38;5;217m[48;5;236m/requirements.(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mtxt(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m];(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236mthen(B[m[38;5;231m[48;5;236m[K
- (B[0;1m[38;5;227m[48;5;236mecho(B[m[38;5;217m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;217m[48;5;236mError: Run 'bash setup_(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mhomerun(B[m[38;5;217m[48;5;236m-insights_base.sh' first to create the project structure in the current directory.(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m[K
- (B[0;1m[38;5;227m[48;5;236mexit(B[m[38;5;231m[48;5;236m (B[m[38;5;217m[48;5;236m1(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mfi(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;111m[48;5;236m# Use relative paths instead of changing directory(B[m[38;5;231m[48;5;236m[K
-(B[m[38;5;111m[48;5;236m# Create (B[0;4m[58:2::0:255:255m[38;5;51m[48;5;236mREADME(B[m[38;5;111m[48;5;236m.(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mmd(B[m[38;5;111m[48;5;236m if it (B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mdoesn(B[m[38;5;111m[48;5;236m’[17;32Ht exist(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mif [(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m!(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m-f(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[m[38;5;217m[48;5;236m/(B[0;4m[58:2::0:255:255m[38;5;51m[48;5;236mREADME(B[m[38;5;217m[48;5;236m.(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mmd(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m];(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236mthen(B[m[38;5;231m[48;5;236m[K
- cat (B[0;1m[38;5;227m[48;5;236m<< EOF1(B[m[38;5;217m[48;5;236m > "(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[m[38;5;217m[48;5;236m/README.md"(B[m[38;5;231m[48;5;236m[K
-(B[m[38;5;217m[48;5;236m# Homerun Insights(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;217m[48;5;236mA FastAPI application to analyze home run statistics using Statcast data, with S[22;78H(B[m[38;5;153m[48;5;239m@@@
-(B[0;1m[38;5;236m[48;5;231msetup_homerun-insights_doc.sh [RO][28X[28C1,1            Top]112[2 q]112[2 q[H(B[m[38;5;111m[48;5;236m#!/bin/bash(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mset(B[m[38;5;51m[48;5;236m (B[m[38;5;214m[48;5;236m-e(B[m[38;5;231m[48;5;236m[K
-[K
-(B[0;1m[38;5;227m[48;5;236mecho(B[m[38;5;217m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;217m[48;5;236mSetting up (B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mhomerun(B[m[38;5;217m[48;5;236m-insights documentation and build files...(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;51m[48;5;236mPROJECT_DIR(B[m[38;5;231m[48;5;236m=(B[0;1m[38;5;227m[48;5;236m"(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mhomerun(B[m[38;5;217m[48;5;236m-insights(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m[K
-(B[m[38;5;51m[48;5;236mPYTHON_VERSION(B[m[38;5;231m[48;5;236m=(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;217m[48;5;236m3.12.6(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[m[38;5;111m[48;5;236m# Matches base.sh(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;111m[48;5;236m# Check if the project directory exists in the current location(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mif [(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m!(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m-d(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m](B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m||(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m[(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m!(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m-f(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[m[38;5;217m[48;5;236m/requirements.(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mtxt(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m];(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236mthen(B[m[38;5;231m[48;5;236m[K
- (B[0;1m[38;5;227m[48;5;236mecho(B[m[38;5;217m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;217m[48;5;236mError: Run 'bash setup_(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mhomerun(B[m[38;5;217m[48;5;236m-insights_base.sh' first to create the proj
-ect structure in the current directory.(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m[K
- (B[0;1m[38;5;227m[48;5;236mexit(B[m[38;5;231m[48;5;236m (B[m[38;5;217m[48;5;236m1(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mfi(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;111m[48;5;236m# Use relative paths instead of changing directory(B[m[38;5;231m[48;5;236m[K
-(B[m[38;5;111m[48;5;236m# Create (B[0;4m[58:2::0:255:255m[38;5;51m[48;5;236mREADME(B[m[38;5;111m[48;5;236m.(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mmd(B[m[38;5;111m[48;5;236m if it (B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mdoesn(B[m[38;5;111m[48;5;236m’[17;32Ht exist(B[m[38;5;231m[48;5;236m[K
-(B[0;1m[38;5;227m[48;5;236mif [(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m!(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m-f(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[m[38;5;217m[48;5;236m/(B[0;4m[58:2::0:255:255m[38;5;51m[48;5;236mREADME(B[m[38;5;217m[48;5;236m.(B[0;4m[58:2::255:0:0m[38;5;196m[48;5;236mmd(B[0;1m[38;5;227m[48;5;236m"(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236m];(B[m[38;5;231m[48;5;236m (B[0;1m[38;5;227m[48;5;236mthen(B[m[38;5;231m[48;5;236m[K
- cat (B[0;1m[38;5;227m[48;5;236m<< EOF1(B[m[38;5;217m[48;5;236m > "(B[m[38;5;201m[48;5;236m$PROJECT_DIR(B[m[38;5;217m[48;5;236m/README.md"(B[m[38;5;231m[48;5;236m[K
-(B[m[38;5;217m[48;5;236m# Homerun Insights(B[m[38;5;231m[48;5;236m[K
-[K
-(B[m[38;5;217m[48;5;236mA FastAPI application to analyze home run statistics using Statcast data, wit(B[m[38;5;153m[48;5;239m@@@
-(B[0;1m[38;5;236m[48;5;231msetup_homerun-insights_doc.sh [RO]                            1,1            Top(B[m[38;5;231m[48;5;236m
-[J[H[?25h[?25l[?1004h[?25h[?25l[24;70H^@        [H[?25h[?25l[24;70H  [23;63H(B[0;1m[38;5;236m[48;5;231m2[21A[?25h[?25l[24;70H(B[m[38;5;231m[48;5;236m^@[22A[?25h[?25l[24;70H  [23;63H(B[0;1m[38;5;236m[48;5;231m3,0-1[20A[?25hSetting up homerun-insights documentation and build files...
+ ```bash
+ git clone https://github.com/hsum/homerun-insights.git
+ cd homerun-insights
+ ```
 
 2. **Install pyenv** (if not already installed):
- - Ubuntu: 
- - macOS: 
+ - Ubuntu: `curl https://pyenv.run | bash`
+ - macOS: `brew install pyenv`
  - Follow post-install steps: https://github.com/pyenv/pyenv#installation
 
 3. **Install Python 3.12.6**:
- 
+ ```bash
+ pyenv install 3.12.6
+ pyenv local 3.12.6
+ ```
 
 4. **Install dependencies**:
- 
+ ```bash
+ make install
+ ```
 
 5. **Configure AWS**:
- - Local: AWS Access Key ID [****************T6OU]: AWS Secret Access Key [****************0ZIP]:  with your credentials.
+ - Local: `aws configure` with your credentials.
  - EC2: Attach an IAM role with S3 access (e.g., AmazonS3FullAccess).
- - Update  with your  and .
+ - Update `.env` with your `S3_BUCKET` and `INSTANCE_ID`.
 
 ## Usage
 
 - **Run the API locally**:
- 
- Visit  to check.
+ ```bash
+ make run-server
+ ```
+ Visit `http://localhost:8000/health` to check.
 
 - **CLI example**:
- 
+ ```bash
+ python src/main.py stats --year 2023 --stat count
+ ```
 
 - **Deploy to EC2**:
- 
+ ```bash
+ make deploy
+ ```
 
 ## Endpoints
 
-- : Check server status.
-- : Basic HR stats.
-- : Pull vs. HR analysis.
-- : Pull vs. launch angle.
-- : Pull vs. exit velocity.
+- `GET /health`: Check server status.
+- `GET /homeruns/{year}`: Basic HR stats.
+- `GET /pull-homerun-relationship/{year}`: Pull vs. HR analysis.
+- `GET /pull-launch-angle/{year}`: Pull vs. launch angle.
+- `GET /pull-exit-velocity/{year}`: Pull vs. exit velocity.
 
 ## Development
 
-- **Lint**: 
-- **Test**: 
-- **Start EC2**: 
-- **Stop EC2**: 
-- **Check EC2 status**: 
-- **SSH to EC2**: 
-- **Sync S3**: 
-- **Setup SSH config**: 
-- **Start EC2 with SSH config**: 
-- **Stop EC2 with SSH cleanup**: 
-- **Clear cache**: 
+- **Lint**: `make lint`
+- **Test**: `make test`
+- **Start EC2**: `make start-ec2`
+- **Stop EC2**: `make stop-ec2`
+- **Check EC2 status**: `make check-ec2`
+- **SSH to EC2**: `make ssh`
+- **Sync S3**: `make sync-s3`
+- **Setup SSH config**: `make setup-ssh-config`
+- **Start EC2 with SSH config**: `make up-ec2`
+- **Stop EC2 with SSH cleanup**: `make down-ec2`
+- **Clear cache**: `make clear-cache`
 
 ## License
 
