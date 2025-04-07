@@ -14,7 +14,7 @@ install:
 	python -m pip install -r requirements.txt
 
 lint:
-	ruff check src tests
+	ruff check --fix src tests
 
 test:
 	pytest tests

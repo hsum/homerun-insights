@@ -3,8 +3,6 @@ from fastapi.testclient import TestClient
 from src.main import app, cli
 import src.data
 import polars as pl
-from pathlib import Path
-from unittest.mock import patch, Mock
 import click.testing
 
 # Setup FastAPI test client
